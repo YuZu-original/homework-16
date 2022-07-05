@@ -2,6 +2,8 @@ from app.data_json import USERS, ORDERS, OFFERS
 from app.models import User, Order, Offer
 from app.setup_db import db
 
+# TODO: добавить docstring-и
+
 class Database:
     def load_all_users(self):
         for user_info in USERS:
