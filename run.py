@@ -1,9 +1,9 @@
 from flask import Flask, jsonify, request
 import json
 
-from setup_db import db
-from database import Database
-from models import User, Order, Offer
+from app.setup_db import db
+from app.database import Database
+from app.models import User, Order, Offer
 
 
 app = Flask(__name__)
