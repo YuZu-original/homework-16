@@ -22,6 +22,7 @@ class User(db.Model):
     phone = db.Column(db.String(100))
     
     def make_dict(self):
+        """ Возвращает данные о User в виде dict """
         return {
             "id": self.id,
             "first_name": self.first_name,
@@ -46,6 +47,7 @@ class Order(db.Model):
     
     
     def make_dict(self):
+        """ Возвращает данные о Order в виде dict """
         return {
             "id": self.id,
             "name": self.name,
@@ -67,6 +69,7 @@ class Offer(db.Model):
     
     
     def make_dict(self):
+        """ Возвращает данные о Offer в виде dict """
         return {
             "id":self.id,
             "order_id":self.order_id,
@@ -171,11 +174,28 @@ def users_by_id_page(pk):
 
 @app.route('/orders')
 def all_orders_page():
-    orders_list = []
-    for order in Order.query.all():
-        orders_list.append(order.make_dict())
-    
-    return jsonify(orders_list)
+    if request.method == 'GET':
+        orders_list = []
+        for order in Order.query.all():
+            orders_list.append(order.make_dict())
+        
+        return jsonify(orders_list)
+    elif request.method == 'POST':
+        order_info = json.loads(request.data)
+        order = Order(
+            id = order_info["id"],
+            name = order_info["name"],
+            description = order_info["description"],
+            start_date = order_info["start_date"],
+            end_date = order_info["end_date"],
+            address = order_info["address"],
+            price = order_info["price"],
+            customer_id = order_info["customer_id"],
+            executor_id = order_info["executor_id"]
+        )
+        db.session.add(order)
+        db.session.commit()
+        return ""
 
 @app.route('/orders/<int:pk>')
 def orders_by_id_page(pk):
@@ -210,11 +230,22 @@ def orders_by_id_page(pk):
 
 @app.route('/offers')
 def all_offers_page():
-    offers_list = []
-    for offer in Offer.query.all():
-        offers_list.append(offer.make_dict())
-    
-    return jsonify(offers_list)
+    if request.method == 'GET':
+        offers_list = []
+        for offer in Offer.query.all():
+            offers_list.append(offer.make_dict())
+        
+        return jsonify(offers_list)
+    elif request.method == 'POST':
+        offer_info = json.loads(request.data)
+        offer = Offer(
+            id = offer_info["id"],
+            order_id = offer_info["order_id"],
+            executor_id = offer_info["executor_id"]
+        )
+        db.session.add(offer)
+        db.session.commit()
+        return ""
 
 @app.route('/offers/<int:pk>')
 def offers_by_id_page(pk):
